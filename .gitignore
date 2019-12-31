@@ -166,3 +166,6 @@ Reacher.app/Contents/Resources/ScreenSelector.nib/info.nib
 Reacher.app/Contents/Resources/ScreenSelector.nib/keyedobjects.nib
 Reacher.app/Contents/Resources/unity default resources
 Reacher.app/Contents/Resources/UnityPlayerIcon.png
+unity-environment.log
+.ipynb_checkpoints/Continuous_Control-checkpoint.ipynb
+*.pyc
