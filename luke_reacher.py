@@ -2,11 +2,7 @@ import numpy as np
 
 class ReacherAgent():
 
-    def __init__(self, brain_name, agent_index, action_size,
-                 action_min=-1, action_max=1):
-
-        self.brain_name = brain_name
-        self.agent_index = agent_index
+    def __init__(self, action_size, action_min=-1, action_max=1):
 
         self.action_size = action_size
         self.action_min = action_min
