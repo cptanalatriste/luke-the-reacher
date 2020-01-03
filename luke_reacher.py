@@ -44,6 +44,7 @@ class ReacherAgent():
         self.action_size = action_size
         self.action_min = action_min
         self.action_max = action_max
+        self.min_learning_samples = min_learning_samples
 
         self.actor_local_network = self.get_actor_network(second_layer_input=actor_2nd_input,
                                                           second_layer_output=actor_2nd_output)
@@ -82,11 +83,27 @@ class ReacherAgent():
 
         return model.to(DEVICE)
 
-    def act(self, state):
+    def act(self, state, action_parameters):
         action = np.random.randn(self.action_size)
         action = np.clip(action, a_min=self.action_min, a_max=self.action_max)
 
         return action
+
+    def step(self, state, action, reward, next_state, done):
+        """
+        Receives information from the environment. Is in charge of storing
+        experiences in the replay buffer and triggering agent learning.
+        """
+
+        self.replay_buffer.add(state, action, reward, next_state, done)
+
+        if len(self.replay_buffer) > self.min_learning_samples:
+
+            learning_samples = self.replay_buffer.sample()
+            self.learn(learning_samples)
+
+    def learn(self, learning_samples):
+        pass
 
     def reset(self):
         pass

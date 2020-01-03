@@ -11,7 +11,7 @@ class TrainingManager():
         return []
 
     def keep_going(self):
-        True
+        return True
 
     def get_action_parameters(self):
         return {}
