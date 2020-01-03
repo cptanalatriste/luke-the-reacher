@@ -59,6 +59,7 @@ class TrainingManager():
                       "Average score: ", average_score)
 
                 agent.save_trained_weights(network_file=network_file)
+                print("Saving network file at: ", network_file)
                 break
 
             self.on_episode_end(environment, agent, network_file)

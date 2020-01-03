@@ -38,14 +38,16 @@ class ReplayBuffer():
     Code taken from: https://github.com/cptanalatriste/banana-hunter
     """
 
-    def __init__(self, buffer_size, training_batch_size, device):
+    def __init__(self, buffer_size, training_batch_size, device,
+                 action_type=np.int64):
 
         self.storage = deque(maxlen=buffer_size)
         self.training_batch_size = training_batch_size
         self.device = device
 
         self.field_names = ['state', 'action', 'reward', 'next_state', 'done']
-        self.field_types = [np.float32, np.int64, np.float32, np.float32, np.float32]
+        self.field_types = [np.float32, action_type, np.float32, np.float32,
+                            np.float32]
 
         self.experience = namedtuple("Experience", field_names=self.field_names)
 
@@ -75,3 +77,18 @@ class ReplayBuffer():
 
     def __len__(self):
         return len(self.storage)
+
+def update_model_parameters(tau, local_network, target_network):
+    """
+    Update the weights of the target network with information gathered from
+    the local network.
+    """
+
+    for target_parameter, local_parameter in zip(target_network.parameters(),
+                                                 local_network.parameters()):
+
+        local_value = local_parameter.data
+        target_value = target_parameter.data
+
+        update_value = tau * local_value + (1.0 - tau) * target_value
+        target_value.copy_(update_value)
