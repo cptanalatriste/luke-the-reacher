@@ -13,3 +13,9 @@ class ReacherAgent():
         action = np.clip(action, a_min=self.action_min, a_max=self.action_max)
 
         return action
+
+    def reset(self):
+        pass
+
+    def save_trained_weights(self, network_file):
+        pass
