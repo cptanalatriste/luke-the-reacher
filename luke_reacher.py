@@ -4,7 +4,7 @@ import torch.optim as optim
 import torch.nn as nn
 import torch.nn.functional as F
 
-from dqn_utils import ReplayBuffer
+from dqn_utils import ReplayBuffer, OUNoise
 
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -63,6 +63,7 @@ class ReacherAgent():
         self.replay_buffer = ReplayBuffer(buffer_size=buffer_size,
                                           training_batch_size=min_learning_samples,
                                           device=DEVICE)
+        self.noise_generator = OUNoise(size=action_size)
 
     def get_actor_network(self, second_layer_input, second_layer_output):
         model = nn.Sequential(
@@ -84,10 +85,18 @@ class ReacherAgent():
         return model.to(DEVICE)
 
     def act(self, state, action_parameters):
-        action = np.random.randn(self.action_size)
-        action = np.clip(action, a_min=self.action_min, a_max=self.action_max)
 
-        return action
+        state = torch.from_numpy(state).float().unsqueeze(0).to(DEVICE)
+        self.actor_local_network.eval()
+        with torch.no_grad():
+            action = self.actor_local_network(state).numpy()
+        self.actor_local_network.train()
+
+        add_noise = action_parameters['add_noise']
+        if add_noise:
+            action += torch.from_numpy(self.noise_generator.sample()).float()
+
+        return np.clip(action, self.action_min, self.action_max)
 
     def step(self, state, action, reward, next_state, done):
         """
@@ -106,7 +115,7 @@ class ReacherAgent():
         pass
 
     def reset(self):
-        pass
+        self.noise_generator.reset()
 
     def save_trained_weights(self, network_file):
         pass

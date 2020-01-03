@@ -6,6 +6,9 @@ class ReacherManager(TrainingManager):
     def __init__(self, environment_params):
         self.environment_params = environment_params
 
+    def get_action_parameters(self):
+        return {'add_noise': True}
+
     def do_reset(self, environment, agent):
 
         brain_name = self.environment_params['brain_name']
