@@ -25,6 +25,7 @@ class TrainingManager():
     def start_training(self, agent, environment, num_episodes, score_window,
                        network_file, target_score):
         all_scores = []
+        avg_scores = []
         last_scores = deque(maxlen=score_window)
 
         for episode in range(1, num_episodes + 1):
@@ -50,12 +51,13 @@ class TrainingManager():
             all_scores.append(current_score)
 
             average_score = np.mean(last_scores)
+            avg_scores.append(average_score)
 
             print('\rEpisode {}\tAverage Score: {:.2f}'.format(episode, average_score),
                   end="")
 
             if episode % score_window == 0:
-                print("Episode", episode, "Average score over the last", score_window,
+                print("\nEpisode", episode, "Average score over the last", score_window,
                       " episodes: ", average_score)
 
             if average_score >= target_score:
@@ -68,4 +70,4 @@ class TrainingManager():
 
             self.on_episode_end(environment, agent, network_file)
 
-        return all_scores
+        return all_scores, avg_scores

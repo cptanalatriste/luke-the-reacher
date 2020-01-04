@@ -14,19 +14,19 @@ class CriticNetwork(nn.Module):
                  second_layer_output):
         super(CriticNetwork, self).__init__()
 
-        self.first_linear_layer = nn.Linear(in_features=state_size,
+        first_layer_input = state_size + action_size
+
+        self.first_linear_layer = nn.Linear(in_features=first_layer_input,
                                             out_features=first_layer_output)
 
-        second_layer_input = first_layer_output + action_size
-        self.second_linear_layer = nn.Linear(in_features=second_layer_input,
+        self.second_linear_layer = nn.Linear(in_features=first_layer_output,
                                              out_features=second_layer_output)
         self.third_linear_layer = nn.Linear(in_features=second_layer_output,
                                             out_features=1)
 
     def forward(self, state, action):
-
-        data_in_transit = F.relu(self.first_linear_layer(state))
-        data_in_transit = torch.cat((data_in_transit, action), dim=1)
+        data_in_transit = torch.cat((state, action), dim=1)
+        data_in_transit = F.relu(self.first_linear_layer(data_in_transit))
         data_in_transit = F.relu(self.second_linear_layer(data_in_transit))
 
         return self.third_linear_layer(data_in_transit)
@@ -52,7 +52,8 @@ class ReacherAgent():
                                                           second_layer_output=actor_2nd_output)
         self.actor_target_network = self.get_actor_network(second_layer_input=actor_2nd_input,
                                                            second_layer_output=actor_2nd_output)
-        self.actor_target_network.load_state_dict(self.actor_local_network.state_dict())
+        update_model_parameters(tau=1.0, local_network=self.actor_local_network,
+                                target_network=self.actor_target_network)
         self.actor_optimizer = optim.Adam(self.actor_local_network.parameters(),
                                           lr=actor_learning_rate)
 
@@ -60,7 +61,8 @@ class ReacherAgent():
                                                             second_layer_output=critic_2nd_output)
         self.critic_target_network = self.get_critic_network(first_layer_output=critic_1st_output,
                                                              second_layer_output=critic_2nd_output)
-        self.critic_target_network.load_state_dict(self.critic_local_network.state_dict())
+        update_model_parameters(tau=1.0, local_network=self.critic_local_network,
+                                target_network=self.critic_target_network)
         self.critic_optimizer = optim.Adam(self.critic_local_network.parameters(),
                                            lr=critic_learning_rate)
 
@@ -121,7 +123,7 @@ class ReacherAgent():
 
         next_actions = self.actor_target_network(next_states)
         q_values_next_state = self.critic_target_network(next_states,
-                                                         next_actions)
+                                                         next_actions.detach())
         q_value_current_state = rewards + (self.gamma * q_values_next_state * (1 - dones))
         q_value_expected = self.critic_local_network(states, actions)
 
