@@ -50,6 +50,10 @@ class TrainingManager():
             all_scores.append(current_score)
 
             average_score = np.mean(last_scores)
+
+            print('\rEpisode {}\tAverage Score: {:.2f}'.format(episode, average_score),
+                  end="")
+
             if episode % score_window == 0:
                 print("Episode", episode, "Average score over the last", score_window,
                       " episodes: ", average_score)
