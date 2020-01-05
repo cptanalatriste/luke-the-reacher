@@ -6,10 +6,10 @@ Luke-the-reacher is a deep-reinforcement learning agent designed for the Reacher
 
 ![The Reacher environment](https://github.com/cptanalatriste/luke-the-reacher/blob/master/img/environment.png?raw=true)
 
-The state is represented via a vector of 33 elements. The correspond to the position, rotation, velocity, and angular velocities of the double-jointed arm. The agent's actions are composed vectors of 4 real-valued elements between -1 and 1.
+The state is represented via a vector of 33 elements. They correspond to the position, rotation, velocity, and angular velocities of the double-jointed arm. The agent's actions are composed by vectors of 4 real-valued elements between -1 and 1.
 These values represent the torque to apply to its two joints.
 
-The agent is reward with +0.1 points every time step the arm is in contact with the target. We consider our agent has mastered the task when he reaches an **average score of 30, over 100 episodes**.
+The agent is rewarded with +0.1 points every time step the arm is in contact with the target. We consider our agent has mastered the task when he reaches an **average score of 30, over 100 episodes**.
 
 ## Getting Started
 Before running your agent, be sure to accomplish this first:
