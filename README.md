@@ -14,7 +14,7 @@ The agent is rewarded with +0.1 points every time step the arm is in contact wit
 ## Getting Started
 Before running your agent, be sure to accomplish this first:
 1. Clone this repository.
-1. Download the reacher environment appropriate to your operating system (available [here](https://github.com/udacity/deep-reinforcement-learning/tree/master/p2_continuous-control)). Be sure to select the file corresponding to **Version 1: One(1) Agent**.
+1. Download the reacher environment appropriate to your operating system (available [here](https://github.com/udacity/deep-reinforcement-learning/tree/master/p2_continuous-control) ). Be sure to select the file corresponding to **Version 1: One(1) Agent**.
 1. Place the environment file in the cloned repository folder.
 1. Setup an appropriate Python environment. Instructions available [here.]
 (https://github.com/udacity/deep-reinforcement-learning)
