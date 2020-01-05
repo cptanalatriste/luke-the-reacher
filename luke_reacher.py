@@ -8,6 +8,9 @@ from dqn_utils import ReplayBuffer, OUNoise, update_model_parameters
 
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
+ACTOR_PREFIX = 'actor_'
+CRITIC_PREFIX = 'critic_'
+
 class CriticNetwork(nn.Module):
 
     def __init__(self, state_size, action_size, first_layer_output,
@@ -150,8 +153,20 @@ class ReacherAgent():
         self.noise_generator.reset()
 
     def save_trained_weights(self, network_file):
-        actor_network_file = "actor_" + network_file
+        actor_network_file = ACTOR_PREFIX + network_file
         torch.save(self.actor_local_network.state_dict(), actor_network_file)
 
-        critic_network_file = "critic_" + network_file
+        critic_network_file = CRITIC_PREFIX + network_file
         torch.save(self.critic_local_network.state_dict(), critic_network_file)
+
+    def load_trained_weights(self, network_file):
+        """
+        Takes weights from a file and assigns them to the local network.
+        """
+        actor_network_file = ACTOR_PREFIX + network_file
+        self.actor_local_network.load_state_dict(torch.load(actor_network_file))
+        print("Actor Network state loaded from ", actor_network_file)
+
+        critic_network_file = CRITIC_PREFIX + network_file
+        self.critic_local_network.load_state_dict(torch.load(critic_network_file))
+        print("Critic Network state loaded from ", critic_network_file)
