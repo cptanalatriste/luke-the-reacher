@@ -4,7 +4,7 @@ import torch.optim as optim
 import torch.nn as nn
 import torch.nn.functional as F
 
-from dqn_utils import ReplayBuffer, OUNoise, update_model_parameters
+from dqn_utils import ReplayBuffer, update_model_parameters
 
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -41,7 +41,7 @@ class ReacherAgent():
                  buffer_size=int(1e5), min_learning_samples=128,
                  actor_learning_rate=1e-4, actor_2nd_input=400,
                  actor_2nd_output=300, critic_1st_output=400, critic_2nd_output=300,
-                 critic_learning_rate=1e-3, gamma=0.9, tau=1e-3):
+                 critic_learning_rate=1e-3, gamma=0.9, tau=1e-3, noise_stdev=0.1):
 
         self.state_size = state_size
         self.action_size = action_size
@@ -50,6 +50,7 @@ class ReacherAgent():
         self.min_learning_samples = min_learning_samples
         self.gamma = gamma
         self.tau = tau
+        self.noise_stdev = noise_stdev
 
         self.actor_local_network = self.get_actor_network(second_layer_input=actor_2nd_input,
                                                           second_layer_output=actor_2nd_output)
@@ -73,7 +74,6 @@ class ReacherAgent():
                                           action_type=np.float32,
                                           training_batch_size=min_learning_samples,
                                           device=DEVICE)
-        self.noise_generator = OUNoise(size=action_size)
 
     def get_actor_network(self, second_layer_input, second_layer_output):
         model = nn.Sequential(
@@ -104,7 +104,7 @@ class ReacherAgent():
 
         add_noise = action_parameters['add_noise']
         if add_noise:
-            action += torch.from_numpy(self.noise_generator.sample()).float()
+            action += self.noise_stdev * np.random.randn(self.action_size)
 
         return np.clip(action, self.action_min, self.action_max)
 
@@ -148,9 +148,6 @@ class ReacherAgent():
         update_model_parameters(tau=self.tau,
                                 local_network=self.actor_local_network,
                                 target_network=self.actor_target_network)
-
-    def reset(self):
-        self.noise_generator.reset()
 
     def save_trained_weights(self, network_file):
         actor_network_file = ACTOR_PREFIX + network_file

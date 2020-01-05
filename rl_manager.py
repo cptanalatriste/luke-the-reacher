@@ -61,7 +61,7 @@ class TrainingManager():
                       " episodes: ", average_score)
 
             if average_score >= target_score:
-                print("Environment solved in ", episode + 1, " episodes. ",
+                print("\nEnvironment solved in ", episode + 1, " episodes. ",
                       "Average score: ", average_score)
 
                 agent.save_trained_weights(network_file=network_file)

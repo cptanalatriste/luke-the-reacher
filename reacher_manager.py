@@ -16,7 +16,6 @@ class ReacherManager(TrainingManager):
 
         environment_info = environment.reset(train_mode=True)[brain_name]
 
-        agent.reset()
         return environment_info.vector_observations[agent_index]
 
     def do_step(self, environment, action):
