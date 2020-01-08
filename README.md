@@ -1,5 +1,5 @@
 # luke-the-reacher
-A deep reinforcement-learning agent for a double-jointed robotic arm.
+A deep reinforcement-learning agent for a double-jointed robotic arm, trained using the [Deep Deterministic Policy Gradient (DDPG) algorithm](https://arxiv.org/abs/1509.02971).
 
 ## Project Details:
 Luke-the-reacher is a deep-reinforcement learning agent designed for the Reacher environment from the [Unity ML-Agents Toolkit](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Learning-Environment-Examples.md).
